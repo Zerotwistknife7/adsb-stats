@@ -1,13 +1,13 @@
 #!/bin/bash
 
-IPATH=/usr/local/share/adsbexchange-stats/
+IPATH=/usr/local/share/adsb-stats/
 set -e
 
 mkdir -p $IPATH
 
-if ! id -u adsbexchange &>/dev/null
+if ! id -u adsb &>/dev/null
 then
-    adduser --system --home $IPATH --no-create-home --quiet adsbexchange >/dev/null || adduser --system --home-dir $IPATH --no-create-home adsbexchange
+    adduser --system --home $IPATH --no-create-home --quiet adsb >/dev/null || adduser --system --home-dir $IPATH --no-create-home adsb
 fi
 
 function aptInstall() {
@@ -45,7 +45,7 @@ if [[ $install == 1 ]]; then
 fi
 
 mkdir -p /usr/local/bin
-cp adsbexchange-showurl /usr/local/bin/adsbexchange-showurl
+cp adsb-showurl /usr/local/bin/adsb-showurl
 
 hash -r
 
@@ -55,21 +55,21 @@ chmod +x $IPATH/json-status
 chmod +x $IPATH/create-uuid.sh
 cp uninstall.sh $IPATH
 
-if [ -f /boot/adsb-config.txt ] && ! [ -d /run/adsbexchange-feed ] && ! [ -f /etc/default/adsbexchange-stats ]
+if [ -f /boot/adsb-config.txt ] && ! [ -d /run/adsb-feed ] && ! [ -f /etc/default/adsb-stats ]
 then
-    echo "USE_OLD_PATH=1" > /etc/default/adsbexchange-stats
+    echo "USE_OLD_PATH=1" > /etc/default/adsb-stats
 fi
 
 # copy the service file
-cp adsbexchange-stats.service /etc/systemd/system/adsbexchange-stats.service
+cp adsb-stats.service /etc/systemd/system/adsb-stats.service
 
-# add adsbexchange user to video group for vcgencmd get_throttled if the system has that command and it works:
+# add adsb user to video group for vcgencmd get_throttled if the system has that command and it works:
 if vcgencmd get_throttled &>/dev/null; then
-    adduser adsbexchange video
+    adduser adsb video
 fi
 
 # enable service
-systemctl enable adsbexchange-stats.service
+systemctl enable adsb-stats.service
 
 
 # exit success for chroot
@@ -80,15 +80,15 @@ fi
 bash $IPATH/create-uuid.sh
 
 # start service
-systemctl restart adsbexchange-stats.service
+systemctl restart adsb-stats.service
 
 # output uuid
 echo "#####################################"
-UUID_FILE="/boot/adsbx-uuid"
+UUID_FILE="/boot/adsb-uuid"
 if ! [[ -f "$UUID_FILE" ]]; then
-    UUID_FILE="/usr/local/share/adsbexchange/adsbx-uuid"
+    UUID_FILE="/usr/local/share/adsb/adsb-uuid"
 fi
 cat "$UUID_FILE"
 echo "#####################################"
-sed -e 's$^$https://www.adsbexchange.com/api/feeders/?feed=$' "$UUID_FILE"
+sed -e 's$^$https://www.adsb.com/api/feeders/?feed=$' "$UUID_FILE"
 echo "#####################################"

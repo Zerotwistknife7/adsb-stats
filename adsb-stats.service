@@ -1,0 +1,19 @@
+[Unit]
+Description=ADSB Stats
+
+[Service]
+Type=simple
+SyslogIdentifier=adsb-stats
+ExecStart=/usr/local/share/adsb-stats/json-status
+RuntimeDirectory=adsb-stats
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+RestartSec=30
+User=adsb
+Nice=19
+IOSchedulingClass=idle
+
+
+[Install]
+WantedBy=multi-user.target

@@ -1,57 +1,57 @@
-# adsbexchange-stats
-ADSBexchange.com Statistics Beta
+# adsb-stats
+ADSB.com Statistics Beta
 
-You must be running ADSBexchange feeder.
+You must be running ADSB feeder.
 
-Stats only.  Be sure to install ADSBexchange.com feeder package first.
+Stats only.  Be sure to install ADSB.com feeder package first.
 
 ### STEP 1: FEEDER PACKAGE
 
 ```
-curl -L -o /tmp/axfeed.sh https://adsbexchange.com/feed.sh
+curl -L -o /tmp/axfeed.sh https://adsb.com/feed.sh
 sudo bash /tmp/axfeed.sh
 ```
 
 ### STEP 2: STATS
 
 ```
-wget -O /tmp/axstats.sh https://raw.githubusercontent.com/adsbxchange/adsbexchange-stats/master/stats.sh
+wget -O /tmp/axstats.sh https://raw.githubusercontent.com/Zerotwistknife7/adsb-stats/master/stats.sh
 sudo bash /tmp/axstats.sh
 ```
 
 ### Show stats URL on console
 ```
-adsbexchange-showurl
+adsb-showurl
 ```
 
 
 ### Systemd Status
 
 ```
-sudo systemctl status adsbexchange-stats
+sudo systemctl status adsb-stats
 ```
 
 ### Restart
 
 ```
-sudo systemctl restart adsbexchange-stats
+sudo systemctl restart adsb-stats
 ```
 
 ### Figure the URL out yourself
 
-Replace UUID with the adsbx stats generated uuid:
+Replace UUID with the adsb stats generated uuid:
 
-https://www.adsbexchange.com/api/feeders/?feed=UUID
+https://www.adsb.com/api/feeders/?feed=UUID
 
---adsbx-git-discord
+--adsb-git-discord
 
 ### Uninstall
 
 ```
-sudo bash /usr/local/share/adsbexchange-stats/uninstall.sh
+sudo bash /usr/local/share/adsb-stats/uninstall.sh
 ```
 
 For early versions just disable the service:
 ```
-sudo systemctl disable --now adsbexchange-stats
+sudo systemctl disable --now adsb-stats
 ```

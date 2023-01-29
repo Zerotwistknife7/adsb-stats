@@ -1,0 +1,6 @@
+#!/bin/bash
+UUID_FILE="/boot/adsb-uuid"
+if ! [[ -f "$UUID_FILE" ]]; then
+    UUID_FILE="/usr/local/share/adsb/adsb-uuid"
+fi
+sed -e 's$^$https://www.adsb.com/api/feeders/?feed=$' "$UUID_FILE"

@@ -3,7 +3,7 @@
 #
 # Upload output data from decoder to remote server
 #
-REMOTE_URL="https://adsbexchange.com/api/receive/"
+REMOTE_URL="https://adsb.com/api/receive/"
 
 REMOTE_HOST=$( echo $REMOTE_URL | awk -F'/' '{print $3}' )
 
@@ -17,30 +17,30 @@ DNS_IGNORE_LOCAL=0
 
 # List all paths, IN PREFERRED ORDER, separated by a SPACE
 # By default, only use the json from the feed client
-JSON_PATHS=("/run/adsbexchange-feed")
+JSON_PATHS=("/run/adsb-feed")
 
 ######################################################################################################################
 # If you know what you're doing, and you want to override the search path, you can do it easily in
-# /etc/default/adsbexchange-stats, by setting the JSON_PATHS variable to something else (or even multiple).
+# /etc/default/adsb-stats, by setting the JSON_PATHS variable to something else (or even multiple).
 # For example, the old stats used this:
-#   JSON_PATHS=("/run/adsbexchange-feed" "/run/readsb" "/run/dump1090-fa" "/run/dump1090-mutability" "/run/dump1090" )
-# You can enable this old path by setting "USE_OLD_PATH=1", preferrably in /etc/default/adsbexchange-stats
+#   JSON_PATHS=("/run/adsb-feed" "/run/readsb" "/run/dump1090-fa" "/run/dump1090-mutability" "/run/dump1090" )
+# You can enable this old path by setting "USE_OLD_PATH=1", preferrably in /etc/default/adsb-stats
 ######################################################################################################################
 
 # UUID file
-UUID_FILE="/boot/adsbx-uuid"
+UUID_FILE="/boot/adsb-uuid"
 if [[ ! -f "$UUID_FILE" ]]; then
-    UUID_FILE="/usr/local/share/adsbexchange/adsbx-uuid"
+    UUID_FILE="/usr/local/share/adsb/adsb-uuid"
 fi
 
 # source local overrides (commonly the JSON_PATH, or DNS cache settings)
-if [ -r /etc/default/adsbexchange-stats ]; then
-	. /etc/default/adsbexchange-stats
+if [ -r /etc/default/adsb-stats ]; then
+	. /etc/default/adsb-stats
 
 	# If 'USE_OLD_PATH' is set, override the entire list
 	if [ "x$USE_OLD_PATH" != "x" ] && [ $USE_OLD_PATH -eq 1 ]; then
 		echo "Note: 'USE_OLD_PATH' is set."
-		JSON_PATHS=("/run/readsb" "/run/adsbexchange-feed")
+		JSON_PATHS=("/run/readsb" "/run/adsb-feed")
 	fi
 fi
 
@@ -52,7 +52,7 @@ fi
 
 JSON_DIR=""
 
-TEMP_DIR="/run/adsbexchange-stats/"
+TEMP_DIR="/run/adsb-stats/"
 TMPFILE="${TEMP_DIR}/tmp.json"
 NEWFILE="${TEMP_DIR}/new.json"
 
@@ -90,7 +90,7 @@ while [ "x$JSON_DIR" = "x" ]; do
 			echo "ERROR: Tried multiple times, could not find any of the directories - ABORTING!"
 			exit 10
 		fi
-		echo "No valid data source directory found, do you have the adsbexchange feed scripts installed?  Tried each of: [${JSON_PATHS[@]}]"
+		echo "No valid data source directory found, do you have the adsb feed scripts installed?  Tried each of: [${JSON_PATHS[@]}]"
 		sleep 20
 	fi
 done
@@ -359,7 +359,7 @@ while true; do
     sleep 0.314
 
 	# Push up the data.  'curl' will wait no more than $MAX_CURL_TIME seconds for upload to complete
-	curl -m $MAX_CURL_TIME $CURL_EXTRA -sS -X POST -H "adsbx-uuid: ${UUID}" -H "Content_Encoding: gzip" --data-binary @- $REMOTE_URL 2>&1 <$TEMP_DIR/upload.gz
+	curl -m $MAX_CURL_TIME $CURL_EXTRA -sS -X POST -H "adsb-uuid: ${UUID}" -H "Content_Encoding: gzip" --data-binary @- $REMOTE_URL 2>&1 <$TEMP_DIR/upload.gz
 	RV=$?
 
 	if [ $RV -ne 0 ]; then
